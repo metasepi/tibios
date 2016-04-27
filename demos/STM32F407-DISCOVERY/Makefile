@@ -97,10 +97,14 @@ include $(CHIBIOS)/os/hal/boards/ST_STM32F4_DISCOVERY/board.mk
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/STM32F407xG.ld
 
+# ATS sources that should be compiled by patsopt.
+ATSSRC = main.dats
+ATSCSRC = $(addprefix build/obj/, $(notdir $(ATSSRC:.dats=.c)))
+
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CSRC = $(STARTUPSRC) \
-       main.c
+       $(ATSCSRC)
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -160,14 +164,20 @@ SZ   = $(TRGT)size
 HEX  = $(CP) -O ihex
 BIN  = $(CP) -O binary
 
+# ATS-specific
+ATS       = patsopt
+ATSNOWARN = -Wno-unused-label -Wno-unused-but-set-variable -Wno-implicit-function-declaration \
+            -Wno-unused-parameter -Wno-char-subscripts
+ATSCFLAGS = -I${PATSHOME} -I${PATSHOME}/ccomp/runtime
+
 # ARM-specific options here
 AOPT =
 
 # THUMB-specific options here
-TOPT = -mthumb -DTHUMB
+TOPT = -mthumb -DTHUMB $(ATSCFLAGS)
 
 # Define C warning options here
-CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
+CWARN = -Wall $(ATSNOWARN)
 
 # Define C++ warning options here
 CPPWARN = -Wall -Wextra -Wundef
@@ -201,3 +211,6 @@ ULIBS =
 
 RULESPATH = $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC
 include $(RULESPATH)/rules.mk
+
+$(ATSCSRC): build/obj/%.c: %.dats
+	$(ATS) -o $@ -d $<
