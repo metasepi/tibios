@@ -161,6 +161,7 @@ AS   = $(TRGT)gcc -x assembler-with-cpp
 AR   = $(TRGT)ar
 OD   = $(TRGT)objdump
 SZ   = $(TRGT)size
+GDB  = $(TRGT)gdb
 HEX  = $(CP) -O ihex
 BIN  = $(CP) -O binary
 
@@ -214,3 +215,7 @@ include $(RULESPATH)/rules.mk
 
 $(ATSCSRC): build/obj/%.c: %.dats
 	$(ATS) -o $@ -d $<
+
+gdbwrite: all
+	@echo '##### Use me while running "sudo st-util". #####'
+	$(GDB) -x gdbwrite.boot build/$(PROJECT).elf
