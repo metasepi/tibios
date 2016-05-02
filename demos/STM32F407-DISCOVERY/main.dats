@@ -2,4 +2,8 @@
 #include "share/atspre_staload.hats"
 
 implement main0 () = {
+  fun loop () = {
+    val () = loop ()
+  }
+  val () = loop ()
 }
