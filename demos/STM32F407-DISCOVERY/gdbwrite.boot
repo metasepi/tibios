@@ -1,2 +1,4 @@
-tar ext localhost:4242
+tar ext localhost:3333
+monitor reset halt
 load
+monitor reset halt

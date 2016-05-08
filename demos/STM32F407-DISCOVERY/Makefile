@@ -217,5 +217,5 @@ $(ATSCSRC): build/obj/%.c: %.dats
 	$(ATS) -o $@ -d $<
 
 gdbwrite: all
-	@echo '##### Use me while running "sudo st-util". #####'
+	@pgrep openocd > /dev/null || (echo '### Run "sudo openocd -f interface/stlink-v2.cfg -f target/stm32f4x.cfg"' && false)
 	$(GDB) -x gdbwrite.boot build/$(PROJECT).elf
